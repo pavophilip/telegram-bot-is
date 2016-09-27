@@ -20,7 +20,7 @@ module.exports = function (src) {
         },
         {
             b: '14:00',
-            e: '16:30'
+            e: '16:00'
         },
         {
             b: '16:15',
@@ -76,9 +76,16 @@ module.exports = function (src) {
                 break;
             }
         }
+
         return day.slice(0, last+1);
     }
 
+    function getTime(id) {
+        return times[id];
+    }
+
+
+    
     var shedule = parseShedule(worksheet);
 
     return {
@@ -99,11 +106,7 @@ module.exports = function (src) {
 
         times: times,
 
-        getTime: function (id, format) {
-            var t = times[id];
-            if(!format) return t;
-            return t.b + '-' + t.e;
-        },
+        getTime: getTime,
 
         getDayTitle: function (id) {
             return weekdays[id];
@@ -115,6 +118,46 @@ module.exports = function (src) {
                 return 'odd';
             else
                 return 'even';
+        },
+        
+        getLessonByTime: function (shedule, week, time) {
+            var found = null;
+            shedule.forEach(function (lesson, index) {
+                lesson = lesson[week];
+                lesson.time = getTime(index);
+
+                var begin = lesson.time.b.split(':');
+                var end = lesson.time.e.split(':');
+
+                begin = parseInt(begin[0]) * 60 + parseInt(begin[1]);
+                end = parseInt(end[0]) * 60 + parseInt(end[1]);
+                if(begin <= (time.h * 60 + time.m) && end >= (time.h * 60 + time.m)){
+                    found = lesson;
+                    return;
+                }
+            });
+
+            return found;
+        },
+
+        getNextBegin: function (time) {
+            var now = new Date();
+            now = {
+                h: now.getHours(),
+                m: now.getMinutes()
+            };
+
+            var found = null;
+
+            times.forEach(function (time) {
+                time = time.b.split(':');
+                if(now.h > time[0]){
+                    found = time;
+                    return;
+                }
+            });
+
+            return found;
         }
     }
 };
