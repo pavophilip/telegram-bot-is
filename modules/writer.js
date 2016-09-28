@@ -1,13 +1,10 @@
-var Config = require('../../config.json');
+var Config = require('../config.json');
 var Format = require('string-template');
-var Shedule = require('./../shedule')(Config.source);
-var Lang = Config.lang;
+var Shedule = require('./shedule')(Config.source);
+var Lang = require('../lang.json');
 
-function formatTime(time){
-    return Format(Lang.time, {
-        h: time.h,
-        m: time.n
-    });
+function formatTime(time) {
+    return time;
 }
 
 function formatTimePeriod(period) {
@@ -18,18 +15,18 @@ function formatTimePeriod(period) {
 }
 
 var Formatter = {
-    welcome: function(){
+    welcome: function () {
         return text = Format(Lang.welcome, {
             test: "azaza"
         });
     },
 
     week: function (week) {
-        if(!week){
+        if (!week) {
             week = Shedule.getCurrentWeek();
         }
 
-        var days_list ="";
+        var days_list = "";
 
         Shedule.getShedule(week).forEach(function (day, id) {
             days_list += Formatter.day(id, week);
@@ -48,25 +45,27 @@ var Formatter = {
     },
 
     day: function (id, week) {
-        id = id ? id : (new Date().getDay() - 1);
-        week = week ? week: Shedule.getCurrentWeek();
+        id = id !== undefined ? id : Shedule.getCurrentDay();
+        week = week ? week : Shedule.getCurrentWeek();
+
 
         var day = Shedule.getShedule(week, id);
         var shedule = "";
         day.forEach(function (item, i) {
             var t = item[week];
 
-            if(!t){
+            if (!t.title) {
                 t = {
-                    title: 'Нет',
+                    title: Lang.lesson_not_found,
                     cab: ''
                 }
             }
             shedule += Format(Lang.shedule_item, {
-                time: formatTimePeriod(Shedule.getTime(i)),
-                title: t.title,
-                cab: t.cab
-            }) + "\n";
+                    //time: formatTimePeriod(Shedule.getTime(i)),
+                    index: (i + 1),
+                    title: t.title,
+                    cab: t.cab
+                }) + "\n";
         });
 
         return text = Format(Lang.week_day_item, {
@@ -77,22 +76,22 @@ var Formatter = {
 
     lesson: function (day, week, time) {
         var now = new Date();
-        day = day ? day : (now.getDay() - 1);
-        week = week ? week: Shedule.getCurrentWeek();
+        day = day !== undefined ? day : (now.getDay() - 1);
+        week = week ? week : Shedule.getCurrentWeek();
         time = time ? time : {
             h: now.getHours(),
             m: now.getMinutes()
         };
-
         var lesson = Shedule.getLessonByTime(Shedule.getShedule(week, day), week, time);
-        console.log(lesson);
-        if(!lesson)
-        return Format(Lang.lesson_item, {
-            day: Shedule.getDayTitle(day),
-            time: time.h + ':' + time.m,
-            shedule: Lang.lesson_not_found,
-            footer: Lang.lesson_footer
-        });
+        if (!lesson) {
+            return Format(Lang.lesson_item, {
+                day: Shedule.getDayTitle(day),
+                time: time.h + ':' + time.m,
+                shedule: Lang.lesson_not_found,
+                footer: Lang.lesson_footer
+            });
+        }
+
 
         return Format(Lang.lesson_item, {
             day: Shedule.getDayTitle(day),
@@ -105,18 +104,40 @@ var Formatter = {
             footer: Lang.lesson_footer
         });
     },
-    
+
     next: function (day, week, time) {
         var found = null;
         var now = new Date();
         day = day ? day : (now.getDay() - 1);
-        week = week ? week: Shedule.getCurrentWeek();
+        week = week ? week : Shedule.getCurrentWeek();
         time = time ? time : {
             h: now.getHours(),
             m: now.getMinutes()
         };
 
-        return Shedule.getNextBegin(time);
+        var lesson = Shedule.getLessonByTime(Shedule.getShedule(week, day), week, Shedule.getNextBegin(time));
+        if (!lesson) {
+            return Format(Lang.lesson_item, {
+                day: Shedule.getDayTitle(day),
+                time: time.h + ':' + time.m,
+                shedule: Lang.next_lesson_not_found
+            });
+        }
+
+        return Format(Lang.lesson_item, {
+            day: Shedule.getDayTitle(day),
+            time: time.h + ':' + time.m,
+            shedule: Format(Lang.shedule_item, {
+                time: formatTimePeriod(lesson.time),
+                title: lesson.title,
+                cab: lesson.cab
+            })
+        });
+    },
+
+    tomorrow: function () {
+        return Formatter.day(Shedule.getDay(Shedule.incDate(1)));
     }
 };
+
 module.exports = Formatter;

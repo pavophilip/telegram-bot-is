@@ -1,0 +1,16 @@
+{
+  "welcome": "Welcome {test}",
+  "week": "{week_header}\n\n{days_list}{week_footer}",
+  "week_header": "Расписание на неделю ({week_type})",
+  "week_footer": "/week_{week_type_key} - {week_type} неделя",
+  "week_day_item": "<b>{day_title}</b>\n{day_shedule}\n",
+  "shedule_item": "<b>{index} </b>{title} {cab}",
+  "lesson_item": "<b>{day} {time}</b>\n{shedule}\n{footer}",
+  "lesson_footer": "/next - Следующая",
+  "week_type_odd": "Нечетная",
+  "week_type_even": "Четная",
+  "lesson_not_found": "Пары нет",
+  "next_lesson_not_found": "Сегодня пар больше нет",
+  "time": "{h}:{m}",
+  "time_period": "{b}-{e}"
+}

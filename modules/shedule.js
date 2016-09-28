@@ -43,23 +43,23 @@ module.exports = function (src) {
             curr_week = null;
         var curr_day = -1;
 
-        for(c in worksheet){
+        for (c in worksheet) {
             var col = c.charAt(0);
             var value = worksheet[c].v;
-            if(col == 'A'){
+            if (col == 'A') {
                 curr_day++;
                 days.push([]);
-            }else if(col == 'B'){
+            } else if (col == 'B') {
                 curr_lesson = parseInt(value.charAt(0)) - 1;
                 days[curr_day].push({
                     even: {},
                     odd: {}
                 });
-            }else if(col == 'D'){
+            } else if (col == 'D') {
                 curr_week = value == 'нечет.' ? 'odd' : 'even'
-            }else if(col == 'E'){
+            } else if (col == 'E') {
                 days[curr_day][curr_lesson][curr_week].title = value;
-            }else if(col == 'F'){
+            } else if (col == 'F') {
                 days[curr_day][curr_lesson][curr_week].cab = value;
             }
         }
@@ -67,35 +67,50 @@ module.exports = function (src) {
         return days;
     }
 
-    function clearDay(day, week){
+    function clearDay(day, week) {
         var last = day.length - 1;
 
-        for(var i = day.length - 1; i >= 0; i--){
-            if(day[i][week].title){
+        for (var i = day.length - 1; i >= 0; i--) {
+            if (day[i][week].title) {
                 last = i;
                 break;
             }
         }
 
-        return day.slice(0, last+1);
+        return day.slice(0, last + 1);
     }
 
     function getTime(id) {
         return times[id];
     }
 
+    function getDay(date) {
+        return date.getDay() - 1;
+    }
 
-    
+    function getCurrentDay() {
+        return getDay(new Date());
+    }
+
+    function incDate(inc, date) {
+        if (!date) {
+            date = new Date();
+        }
+        var n = new Date();
+        n.setDate(date.getDate() + inc);
+        return n;
+    }
+
     var shedule = parseShedule(worksheet);
 
     return {
         getShedule: function (week, day) {
             var items = [];
-            if(day !== undefined){
+            if (day !== undefined) {
                 return clearDay(shedule[day], week);
             }
 
-            shedule.forEach(function(day) {
+            shedule.forEach(function (day) {
                 items.push(clearDay(day, week));
             });
 
@@ -113,15 +128,24 @@ module.exports = function (src) {
         },
 
         getCurrentWeek: function () {
-            var d = new Date().getDate() - 1;
-            if (d % 2 == 0)
+
+            var d = new Date().getDate();
+
+            if (!(Math.floor(d / 7) % 2))
                 return 'odd';
             else
                 return 'even';
         },
-        
+
+        getDay: getDay,
+
+        getCurrentDay: getCurrentDay,
+
+        incDate: incDate,
+
         getLessonByTime: function (shedule, week, time) {
             var found = null;
+            console.log(arguments);
             shedule.forEach(function (lesson, index) {
                 lesson = lesson[week];
                 lesson.time = getTime(index);
@@ -131,9 +155,8 @@ module.exports = function (src) {
 
                 begin = parseInt(begin[0]) * 60 + parseInt(begin[1]);
                 end = parseInt(end[0]) * 60 + parseInt(end[1]);
-                if(begin <= (time.h * 60 + time.m) && end >= (time.h * 60 + time.m)){
+                if (!found && (begin <= (time.h * 60 + time.m) && end >= (time.h * 60 + time.m))) {
                     found = lesson;
-                    return;
                 }
             });
 
@@ -151,9 +174,12 @@ module.exports = function (src) {
 
             times.forEach(function (time) {
                 time = time.b.split(':');
-                if(now.h > time[0]){
-                    found = time;
-                    return;
+                var lesson_time = {
+                    h: parseInt(time[0]),
+                    m: parseInt(time[1])
+                };
+                if (!found && (now.h * 60 + now.m) < (lesson_time.h * 60 + lesson_time.m)) {
+                    found = lesson_time;
                 }
             });
 
