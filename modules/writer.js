@@ -14,11 +14,13 @@ function formatTimePeriod(period) {
     });
 }
 
+function getIndexEmoji(i){
+    return i +'&#8419;';
+}
+
 var Formatter = {
     welcome: function () {
-        return text = Format(Lang.welcome, {
-            test: "azaza"
-        });
+        return text = Format(Lang.welcome, {});
     },
 
     week: function (week) {
@@ -62,14 +64,16 @@ var Formatter = {
             }
             shedule += Format(Lang.shedule_item, {
                     //time: formatTimePeriod(Shedule.getTime(i)),
-                    index: (i + 1),
+                    index: getIndexEmoji((i + 1)) + " ",
                     title: t.title,
                     cab: t.cab
                 }) + "\n";
         });
 
+        var dt = Shedule.getDayTitle(id);
         return text = Format(Lang.week_day_item, {
-            day_title: Shedule.getDayTitle(id),
+            sep: '&#12336;'.repeat((dt.length / 2) + 2),
+            day_title: dt,
             day_shedule: shedule
         });
     },
@@ -106,7 +110,6 @@ var Formatter = {
     },
 
     next: function (day, week, time) {
-        var found = null;
         var now = new Date();
         day = day ? day : (now.getDay() - 1);
         week = week ? week : Shedule.getCurrentWeek();

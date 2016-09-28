@@ -3,14 +3,70 @@
   "week": "{week_header}\n\n{days_list}{week_footer}",
   "week_header": "Расписание на неделю ({week_type})",
   "week_footer": "/week_{week_type_key} - {week_type} неделя",
-  "week_day_item": "<b>{day_title}</b>\n{day_shedule}\n",
-  "shedule_item": "<b>{index} </b>{title} {cab}",
-  "lesson_item": "<b>{day} {time}</b>\n{shedule}\n{footer}",
+  "week_day_item": "&#10145; <b>{day_title}</b>\n{sep}\n{day_shedule}\n",
+  "shedule_item": "<b>{index}</b>{title} {cab}",
+  "lesson_item": "<b>{day}</b>\n{shedule}\n{footer}",
   "lesson_footer": "/next - Следующая",
   "week_type_odd": "Нечетная",
   "week_type_even": "Четная",
   "lesson_not_found": "Пары нет",
   "next_lesson_not_found": "Сегодня пар больше нет",
   "time": "{h}:{m}",
-  "time_period": "{b}-{e}"
+  "time_period": "{b}-{e}",
+  "times": [
+    {
+      "b": "9:00",
+      "e": "10:30"
+    },
+    {
+      "b": "10:45",
+      "e": "12:15"
+    },
+    {
+      "b": "12:30",
+      "e": "14:00"
+    },
+    {
+      "b": "14:00",
+      "e": "16:00"
+    },
+    {
+      "b": "16:15",
+      "e": "17:45"
+    },
+    {
+      "b": "18:00",
+      "e": "19:30"
+    }
+  ],
+  "weekdays": [
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница"
+  ],
+  "aliases": {
+    "download":   "^\/download|Скачать$",
+    "week":       "^\/week|Текущая неделя|Неделя$",
+    "week_even":  "^\/week_even|Четная|Четная неделя$",
+    "week_odd":   "^\/week_odd|Нечетная|Нечетная неделя$",
+    "today":      "^\/today|Сегодня|Пары сегодня$",
+    "now":        "^\/now|Сейчас|Текущая пара$",
+    "next":       "^\/next|Следующая|Следующая пара|Потом$",
+    "day":        "^\/day([1-5])|(Понедельник)|(Вторник)|(Среда)|(Четверг)|(Пятница)$",
+    "tomorrow":   "^\/tomorrow|Завтра|Пары завтра$",
+    "help":       "^\/help|Помощь|Команды|Меню|На главную"
+  },
+  "keyboards": {
+    "start": [[{"text":"Сегодня"}],[{"text":"Текущая неделя"}],[{"text":"Четная"},{"text":"Нечетная"}],[{"text":"Скачать"}]],
+    "week": [[{"text":"Сегодня"},{"text":"Понедельник"}],[{"text":"Вторник"},{"text":"Среда"}],[{"text":"Четверг"},{"text":"Пятница"}],[{"text":"На главную"}]],
+    "week_even": [[{"text":"Сегодня"}],[{"text":"Текущая неделя"}],[{"text":"Четная"},{"text":"Нечетная"}],[{"text":"На главную"}]],
+    "week_odd": [[{"text":"Сегодня"}],[{"text":"Текущая неделя"}],[{"text":"Четная"},{"text":"Нечетная"}],[{"text":"На главную"}]],
+    "today": [[{"text":"Пара сейчас"},{"text":"Следующая пара"}],[{"text":"Завтра"}],[{"text":"Текущая неделя"}],[{"text":"На главную"}]],
+    "now": [],
+    "next": [],
+    "help": [[{"text":"Сегодня"}],[{"text":"Текущая неделя"}],[{"text":"Четная"},{"text":"Нечетная"}],[{"text":"Скачать"}]]
+  },
+  "help_text": "Commands & aliases:\n\n/week (Текущая неделя, Неделя)\n/week_even (Четная, Четная неделя)\n/week_odd (Нечетная, Нечетная неделя)\n/today (Сегодня, Пары сегодня)\n/now (Cейчас, Текущая пара)\n/next (Следующая, Следующая пара, Потом)\n/tomorrow (Завтра, Пары завтра)\n/day1 (2,3,4,5) (Понедельник, Вторник, Среда, Четверг, Пятница)\n/download (Текущая неделя, Неделя)\n\n<a href=\"https://github.com/PhilipPavo/telegram-bot-is\">github.com/PhilipPavo/telegram-bot-is</a>"
 }

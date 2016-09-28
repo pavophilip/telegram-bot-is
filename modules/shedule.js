@@ -1,40 +1,13 @@
 XLSX = require('xlsx');
-
+var Lang = require('../lang.json');
 
 module.exports = function (src) {
     var workbook = XLSX.readFile(src);
     var worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
-    var times = [
-        {
-            b: '9:00',
-            e: '10:30'
-        },
-        {
-            b: '10:45',
-            e: '12:15'
-        },
-        {
-            b: '12:30',
-            e: '14:00'
-        },
-        {
-            b: '14:00',
-            e: '16:00'
-        },
-        {
-            b: '16:15',
-            e: '17:45'
-        },
-        {
-            b: '18:00',
-            e: '19:30'
-        }
-    ];
+    var times = Lang.times;
 
-    var weekdays = [
-        'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'
-    ];
+    var weekdays = Lang.weekdays;
 
     function parseShedule(worksheet) {
         var days = [];
@@ -145,7 +118,6 @@ module.exports = function (src) {
 
         getLessonByTime: function (shedule, week, time) {
             var found = null;
-            console.log(arguments);
             shedule.forEach(function (lesson, index) {
                 lesson = lesson[week];
                 lesson.time = getTime(index);
