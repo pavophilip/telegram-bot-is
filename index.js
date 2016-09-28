@@ -11,8 +11,6 @@ var Mysql = require('mysql');
     database: Config.db_database
 });*/
 
-console.log(new Date());
-
 var bot = new Telegram(Config.api_token, {polling: true});
 
 var common_options = {
@@ -102,3 +100,4 @@ bot.onText(new RegExp(Lang.aliases.help, 'i'), function (msg) {
 String.prototype.repeat = function(times) {
     return (new Array(times + 1)).join(this);
 };
+

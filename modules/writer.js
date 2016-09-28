@@ -79,7 +79,7 @@ var Formatter = {
     },
 
     lesson: function (day, week, time) {
-        var now = new Date();
+        var now = Shedule.nowDate();
         day = day !== undefined ? day : (now.getDay() - 1);
         week = week ? week : Shedule.getCurrentWeek();
         time = time ? time : {
@@ -110,7 +110,7 @@ var Formatter = {
     },
 
     next: function (day, week, time) {
-        var now = new Date();
+        var now = Shedule.nowDate();
         day = day ? day : (now.getDay() - 1);
         week = week ? week : Shedule.getCurrentWeek();
         time = time ? time : {

@@ -1,5 +1,6 @@
 XLSX = require('xlsx');
 var Lang = require('../lang.json');
+var time = require('time');
 
 module.exports = function (src) {
     var workbook = XLSX.readFile(src);
@@ -62,21 +63,28 @@ module.exports = function (src) {
     }
 
     function getCurrentDay() {
-        return getDay(new Date());
+        return getDay(nowDate());
     }
 
     function incDate(inc, date) {
         if (!date) {
-            date = new Date();
+            date = nowDate();
         }
-        var n = new Date();
+        var n = nowDate();
         n.setDate(date.getDate() + inc);
         return n;
+    }
+
+    function nowDate(){
+        var now = new time.Date();
+        now.setTimezone("Europe/Moscow");
+        return now;
     }
 
     var shedule = parseShedule(worksheet);
 
     return {
+        nowDate: nowDate,
         getShedule: function (week, day) {
             var items = [];
             if (day !== undefined) {
@@ -102,7 +110,7 @@ module.exports = function (src) {
 
         getCurrentWeek: function () {
 
-            var d = new Date().getDate();
+            var d = nowDate().getDate();
 
             if (!(Math.floor(d / 7) % 2))
                 return 'odd';
@@ -118,6 +126,9 @@ module.exports = function (src) {
 
         getLessonByTime: function (shedule, week, time) {
             var found = null;
+            if(!time){
+                return found;
+            }
             shedule.forEach(function (lesson, index) {
                 lesson = lesson[week];
                 lesson.time = getTime(index);
@@ -136,14 +147,13 @@ module.exports = function (src) {
         },
 
         getNextBegin: function (time) {
-            var now = new Date();
+            var now = nowDate();
             now = {
                 h: now.getHours(),
                 m: now.getMinutes()
             };
 
             var found = null;
-
             times.forEach(function (time) {
                 time = time.b.split(':');
                 var lesson_time = {
@@ -154,7 +164,6 @@ module.exports = function (src) {
                     found = lesson_time;
                 }
             });
-
             return found;
         }
     }
