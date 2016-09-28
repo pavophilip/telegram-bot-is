@@ -72,7 +72,7 @@ var Formatter = {
 
         var dt = Shedule.getDayTitle(id);
         return text = Format(Lang.week_day_item, {
-            sep: '&#12336;'.repeat((dt.length / 2) + 2),
+            sep: new String('〰').repeat(parseInt((dt.length / 2)) + 2),
             day_title: dt,
             day_shedule: shedule
         });
@@ -139,7 +139,10 @@ var Formatter = {
     },
 
     tomorrow: function () {
-        return Formatter.day(Shedule.getDay(Shedule.incDate(1)));
+        var day = Shedule.getDay(Shedule.incDate(1));
+        if(day > 5)
+            day = 1;
+        return Formatter.day(day);
     }
 };
 

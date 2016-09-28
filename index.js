@@ -2,6 +2,16 @@ var Config = require('./config.json');
 var Telegram = require('node-telegram-bot-api');
 var Writer = require('./modules/writer');
 var Lang = require('./lang.json');
+var Mysql = require('mysql');
+
+/*var Sql = Mysql.createConnection({
+    host: Config.db_host,
+    user: Config.db_login,
+    password: Config.db_password,
+    database: Config.db_database
+});*/
+
+console.log(new Date());
 
 var bot = new Telegram(Config.api_token, {polling: true});
 
@@ -89,3 +99,6 @@ bot.onText(new RegExp(Lang.aliases.help, 'i'), function (msg) {
     bot.sendMessage(msg.from.id, Lang.help_text, common_options);
 });
 
+String.prototype.repeat = function(times) {
+    return (new Array(times + 1)).join(this);
+};
