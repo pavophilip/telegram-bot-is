@@ -1,6 +1,5 @@
 XLSX = require('xlsx');
 var Lang = require('../lang.json');
-var time = require('time');
 
 module.exports = function (src) {
     var workbook = XLSX.readFile(src);
@@ -75,10 +74,11 @@ module.exports = function (src) {
         return n;
     }
 
+    //fuck it...
     function nowDate(){
-        var now = new time.Date();
-        now.setTimezone("Europe/Moscow");
-        return now;
+        var d = new Date();
+        var date = new Date(d.getTime() - (d.getTimezoneOffset() * 60000) + (3600000*'+3.0'));
+        return date;
     }
 
     var shedule = parseShedule(worksheet);
