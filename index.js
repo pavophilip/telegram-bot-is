@@ -1,72 +1,113 @@
-var Config = require('./config.json');
+var Config = require('./config.json')[process.env.NODE_ENV];
 var Telegram = require('node-telegram-bot-api');
 var Writer = require('./modules/writer');
 var Lang = require('./lang.json');
-var Mysql = require('mysql');
+var Client = require('./modules/Client');
+var Notification = require('./modules/Notification');
 
-/*var Sql = Mysql.createConnection({
-    host: Config.db_host,
-    user: Config.db_login,
-    password: Config.db_password,
-    database: Config.db_database
-});*/
+var Bot = new Telegram(Config.api_token, {polling: true});
+Notification.init(Bot);
 
-var bot = new Telegram(Config.api_token, {polling: true});
+var common_options = Config.message_options;
 
-var common_options = {
-    parse_mode: 'HTML'
-};
+Bot.onText(/\/start/, function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        console.log(err, r);
+    });
 
-bot.onText(/\/start/, function (msg) {
     var options  = common_options;
     options.reply_markup = {
         keyboard: Lang.keyboards.start
     };
-    bot.sendMessage(msg.from.id, Writer.welcome(), common_options);
+    Bot.sendMessage(msg.from.id, Writer.welcome(), common_options);
 });
 
-bot.onText(new RegExp(Lang.aliases.week, 'i'), function (msg) {
+Bot.onText(new RegExp(Lang.aliases.week, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
     var options  = common_options;
     options.reply_markup = {
         keyboard: Lang.keyboards.week
     };
-    bot.sendMessage(msg.from.id, Writer.week(), common_options);
+    Bot.sendMessage(msg.from.id, Writer.week(), common_options);
 });
 
-bot.onText(new RegExp(Lang.aliases.week_even, 'i'), function (msg) {
+Bot.onText(new RegExp(Lang.aliases.week_even, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
     var options  = common_options;
     options.reply_markup = {
         keyboard: Lang.keyboards.week_even
     };
-    bot.sendMessage(msg.from.id, Writer.week('even'), common_options);
+    Bot.sendMessage(msg.from.id, Writer.week('even'), common_options);
 });
 
-bot.onText(new RegExp(Lang.aliases.week_odd, 'i'), function (msg) {
+Bot.onText(new RegExp(Lang.aliases.week_odd, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
     var options  = common_options;
     options.reply_markup = {
         keyboard: Lang.keyboards.week_odd
     };
-    bot.sendMessage(msg.from.id, Writer.week('odd'), common_options);
+    Bot.sendMessage(msg.from.id, Writer.week('odd'), common_options);
 });
 
-bot.onText(new RegExp(Lang.aliases.today, 'i'), function (msg) {
+Bot.onText(new RegExp(Lang.aliases.today, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
     var options  = common_options;
     options.reply_markup = {
         keyboard: Lang.keyboards.today
     };
-    bot.sendMessage(msg.from.id, Writer.day(), common_options);
+    Bot.sendMessage(msg.from.id, Writer.day(), common_options);
 });
 
-bot.onText(new RegExp(Lang.aliases.now, 'i'), function (msg) {
+Bot.onText(new RegExp(Lang.aliases.now, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
     var options = common_options;
-    bot.sendMessage(msg.from.id, Writer.lesson(), options);
+    Bot.sendMessage(msg.from.id, Writer.lesson(), options);
 });
 
-bot.onText(new RegExp(Lang.aliases.next, 'i'), function (msg) {
-    bot.sendMessage(msg.from.id, Writer.next(), common_options);
+Bot.onText(new RegExp(Lang.aliases.next, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
+    Bot.sendMessage(msg.from.id, Writer.next(), common_options);
 });
 
-bot.onText(new RegExp(Lang.aliases.day, 'i'), function (msg, match) {
+Bot.onText(new RegExp(Lang.aliases.day, 'i'), function (msg, match) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
     var day = parseInt(match[1]);
     if(!day){
         var wd = Lang.weekdays.map(function(value) {
@@ -77,24 +118,42 @@ bot.onText(new RegExp(Lang.aliases.day, 'i'), function (msg, match) {
         day = day - 1;
     }
 
-    bot.sendMessage(msg.from.id, Writer.day(day), common_options);
+    Bot.sendMessage(msg.from.id, Writer.day(day), common_options);
 });
 
-bot.onText(new RegExp(Lang.aliases.tomorrow, 'i'), function (msg) {
-    bot.sendMessage(msg.from.id, Writer.tomorrow(), common_options);
+Bot.onText(new RegExp(Lang.aliases.tomorrow, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
+    Bot.sendMessage(msg.from.id, Writer.tomorrow(), common_options);
 });
 
 //not documented
-bot.onText(new RegExp(Lang.aliases.download, 'i'), function (msg) {
-    bot.sendDocument(msg.from.id, Config.source, common_options);
+Bot.onText(new RegExp(Lang.aliases.download, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
+    Bot.sendDocument(msg.from.id, Config.source, common_options);
 });
 
-bot.onText(new RegExp(Lang.aliases.help, 'i'), function (msg) {
+Bot.onText(new RegExp(Lang.aliases.help, 'i'), function (msg) {
+    var from = msg.from;
+    from.telegram_id = from.id;
+    Client.check(from, function (err, r) {
+        //console.log(err, r);
+    });
+
     var options = common_options;
     options.reply_markup = {
         keyboard: Lang.keyboards.help
     };
-    bot.sendMessage(msg.from.id, Lang.help_text, common_options);
+    Bot.sendMessage(msg.from.id, Lang.help_text, common_options);
 });
 
 String.prototype.repeat = function(times) {

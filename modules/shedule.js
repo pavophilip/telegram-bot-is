@@ -1,3 +1,4 @@
+var Config = require('../config.json')[process.env.NODE_ENV];
 XLSX = require('xlsx');
 var Lang = require('../lang.json');
 
@@ -58,7 +59,8 @@ module.exports = function (src) {
     }
 
     function getDay(date) {
-        return date.getDay() - 1;
+        var d = date.getDay() - 1;
+        return d < 0 ? 6 : d;
     }
 
     function getCurrentDay() {
@@ -77,7 +79,7 @@ module.exports = function (src) {
     //fuck it...
     function nowDate(){
         var d = new Date();
-        var date = new Date(d.getTime() - (d.getTimezoneOffset() * 60000) + (3600000*'+3.0'));
+        var date = new Date(d.getTime() - (d.getTimezoneOffset() * 60000) + (3600000*Config.timezone));
         return date;
     }
 
@@ -88,6 +90,9 @@ module.exports = function (src) {
         getShedule: function (week, day) {
             var items = [];
             if (day !== undefined) {
+                if(!shedule[day]){
+                    return false;
+                }
                 return clearDay(shedule[day], week);
             }
 
@@ -109,7 +114,7 @@ module.exports = function (src) {
         },
 
         getCurrentWeek: function () {
-
+            return 'even';
             var d = nowDate().getDate();
 
             if (!(Math.floor(d / 7) % 2))
@@ -129,6 +134,7 @@ module.exports = function (src) {
             if(!time){
                 return found;
             }
+
             shedule.forEach(function (lesson, index) {
                 lesson = lesson[week];
                 lesson.time = getTime(index);
@@ -138,7 +144,8 @@ module.exports = function (src) {
 
                 begin = parseInt(begin[0]) * 60 + parseInt(begin[1]);
                 end = parseInt(end[0]) * 60 + parseInt(end[1]);
-                if (!found && (begin <= (time.h * 60 + time.m) && end >= (time.h * 60 + time.m))) {
+
+                if (!found && (begin <= (time.h * 60 + time.m) && end > (time.h * 60 + time.m))) {
                     found = lesson;
                 }
             });
@@ -160,6 +167,7 @@ module.exports = function (src) {
                     h: parseInt(time[0]),
                     m: parseInt(time[1])
                 };
+
                 if (!found && (now.h * 60 + now.m) < (lesson_time.h * 60 + lesson_time.m)) {
                     found = lesson_time;
                 }

@@ -1,4 +1,4 @@
-var Config = require('../config.json');
+var Config = require('../config.json')[process.env.NODE_ENV];
 var Format = require('string-template');
 var Shedule = require('./shedule')(Config.source);
 var Lang = require('../lang.json');
@@ -16,6 +16,10 @@ function formatTimePeriod(period) {
 
 function getIndexEmoji(i){
     return i +'&#8419;';
+}
+
+function getDayMonth(date){
+    return date.getDate() + " " + Lang.months[date.getMonth()];
 }
 
 var Formatter = {
@@ -50,8 +54,13 @@ var Formatter = {
         id = id !== undefined ? id : Shedule.getCurrentDay();
         week = week ? week : Shedule.getCurrentWeek();
 
+        var date = Shedule.nowDate();
+        date.setDate(date.getDate()  + (id - Shedule.getCurrentDay()));
 
         var day = Shedule.getShedule(week, id);
+        if(!day){
+            return Format(Lang.today_freeday, {});
+        }
         var shedule = "";
         day.forEach(function (item, i) {
             var t = item[week];
@@ -71,7 +80,8 @@ var Formatter = {
         });
 
         var dt = Shedule.getDayTitle(id);
-        return text = Format(Lang.week_day_item, {
+        return Format(Lang.week_day_item, {
+            date: getDayMonth(date),
             sep: new String('〰').repeat(parseInt((dt.length / 2)) + 2),
             day_title: dt,
             day_shedule: shedule
@@ -86,7 +96,9 @@ var Formatter = {
             h: now.getHours(),
             m: now.getMinutes()
         };
-        var lesson = Shedule.getLessonByTime(Shedule.getShedule(week, day), week, time);
+        var shedule = Shedule.getShedule(week, day);
+        var lesson = shedule ? Shedule.getLessonByTime(shedule, week, time) : false;
+
         if (!lesson) {
             return Format(Lang.lesson_item, {
                 day: Shedule.getDayTitle(day),
@@ -119,6 +131,7 @@ var Formatter = {
         };
 
         var lesson = Shedule.getLessonByTime(Shedule.getShedule(week, day), week, Shedule.getNextBegin(time));
+
         if (!lesson) {
             return Format(Lang.lesson_item, {
                 day: Shedule.getDayTitle(day),
@@ -143,6 +156,14 @@ var Formatter = {
         if(day > 5)
             day = 1;
         return Formatter.day(day);
+    },
+    
+    daily_notification: function () {
+        var week_day = Formatter.day();
+
+        return Format(Lang.daily_notification, {
+            week_day_item: week_day
+        });
     }
 };
 
