@@ -10,7 +10,7 @@ function query(sql, data, cb){
 
         if(err) {
             console.log(err);
-            callback(err);
+            cb(err);
             return;
         }
 
@@ -58,6 +58,10 @@ function addClient(data, cb) {
     if(!data.username){
         data.username = "";
     }
+
+    if(!data.last_name) data.last_name = "";
+    if(!data.first_name) data.first_name = "";
+
     query('INSERT INTO clients(telegram_id, first_name, last_name, username, createdAt, updatedAt) VALUES(:telegram_id, :first_name, :last_name, :username, :createdAt, :updatedAt)', {
         telegram_id: data.telegram_id,
         first_name: data.first_name,
@@ -75,6 +79,10 @@ function updateClient(data, cb) {
     if(!data.username){
         data.username = "";
     }
+
+    if(!data.last_name) data.last_name = "";
+    if(!data.first_name) data.first_name = "";
+
     query('UPDATE clients SET updatedAt = :updatedAt, first_name = :first_name, last_name = :last_name, username = :username WHERE telegram_id = :telegram_id', data, function (err, resp) {
         cb(err, resp);
     });
@@ -106,6 +114,7 @@ function checkClient(data, cb){
         }
     });
 }
+
 
 module.exports = {
     add: addClient,

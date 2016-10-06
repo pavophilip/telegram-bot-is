@@ -18,8 +18,9 @@ var job = null;
 function sendNotify(to){
     var options = Config.message_options;
     options.reply_markup = {
-        keyboard: Lang.keyboards.today
+        inline_keyboard: Lang.keyboards.today_inline
     };
+
     Bot.sendMessage(to, Writer.daily_notification(), options);
 }
 

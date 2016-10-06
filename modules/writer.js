@@ -24,7 +24,7 @@ function getDayMonth(date){
 
 var Formatter = {
     welcome: function () {
-        return text = Format(Lang.welcome, {});
+        return text = Format(Lang.welcome, {}) + "\n" + Shedule.nowDate();
     },
 
     week: function (week) {
@@ -103,7 +103,7 @@ var Formatter = {
             return Format(Lang.lesson_item, {
                 day: Shedule.getDayTitle(day),
                 time: time.h + ':' + time.m,
-                shedule: Lang.lesson_not_found,
+                shedule: Lang.now_lesson_not_found,
                 footer: Lang.lesson_footer
             });
         }

@@ -1,0 +1,15 @@
+{
+  "apps": [
+    {
+      "name": "telegram-shedule",
+      "script": "./index.js",
+      "watch": false,
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "env_test": {
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}
